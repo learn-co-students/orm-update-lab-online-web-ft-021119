@@ -9,7 +9,9 @@ class Student
   def initialize(name, grade, id=nil)
     @name = name
     @grade = grade
+    @id = id
   end
+
 
   def self.create_table
     sql =  <<-SQL
@@ -22,10 +24,12 @@ class Student
     DB[:conn].execute(sql)
   end
 
+
   def self.drop_table
     sql = "DROP TABLE students"
     DB[:conn].execute(sql)
   end
+
 
   def update
     sql = "UPDATE students SET name = ?, grade = ? WHERE id = ?"
@@ -45,11 +49,16 @@ class Student
     end
   end
 
+
   def self.create(name,grade)
     self.new(name, grade)
-
     sql = "INSERT INTO students (name, grade) VALUES (?, ?)"
     DB[:conn].execute(sql, name, grade)
+  end
+
+  def self.new_from_db(row)
+    student = self.new(row[1], row[2], row[0])
+    student
   end
 
 
